@@ -1,0 +1,36 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'java'
+}
+
+group = 'org.launchcode'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+test {
+	useJUnitPlatform()
+
+	// ./gradlew test -D DB_HOST=localhost -D DB_PORT=5445 -D DB_NAME=todo_test -D DB_USER=todo_test_user -D DB_PASS=todopass
+	systemProperties System.properties
+}
+
+bootRun {
+
+	// ./gradlew bootRun -D DB_HOST=localhost -D DB_PORT=5444 -D DB_NAME=todo -D DB_USER=todo_user -D DB_PASS=todopass
+	systemProperties System.properties
+}
