@@ -10,7 +10,7 @@ In short it allowed the API consumer (like the Todo Client, or curl) to:
 - PATCH a TodoItem which changed the completed property to true
 - DELETE a TodoItem by id which removed it from the underlying database
 
-This repository under the `starter` branch has the base source code with tests for the functionality listed above.
+This repository has the base source code with tests for the functionality listed above.
 
 Our goal is to expand the functionality of this Todo API by giving the consumer the ability to add any number of additional tasks to any one TodoItem.
 
