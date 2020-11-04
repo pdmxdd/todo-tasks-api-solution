@@ -99,6 +99,14 @@ However, they may want to subdivide this further by adding tasks to the greater 
 
 So in the end they have one TodoItem (Clean Kitchen) and a collection of tasks related to the TodoItem.
 
+An API consumer would be able to make a request for all a TodoItem's associated tasks by:
+
+- GET /todos/{id}/features -> 200 collection of tasks
+
+An API consumer would be able to add tasks toa  TodoItem by:
+
+- POST /todos/{id}/features ({"title": "some sub task"}) -> 201
+
 ## Take Inventory
 
 This will require us as the developers of the API to make some changes.
@@ -112,7 +120,7 @@ We will have to refactor the TodoItem entity so that it has a OneToMany relation
 We will have to add controller logic that allows consumers to:
 
 - GET /todos/{id}/tasks -> 200 Collection of Tasks entities
-- POST /todos/{id}/tasks ({"text": "some task"}) -> 200
+- POST /todos/{id}/tasks ({"text": "some task"}) -> 201
 
 This will go in the provided, but empty, `TaskController.java` file.
 
