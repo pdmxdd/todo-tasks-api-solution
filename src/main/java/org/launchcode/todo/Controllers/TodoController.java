@@ -1,9 +1,11 @@
 package org.launchcode.todo.Controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.launchcode.todo.Models.IncomingTodoItem;
+import org.launchcode.todo.Models.OutgoingTodoItem;
 import org.launchcode.todo.Models.TodoItem;
 import org.launchcode.todo.data.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,11 @@ public class TodoController {
     @GetMapping
     public ResponseEntity<Object> getTodos() {
         List<TodoItem> todoItems = todoRepository.findAll();
-        return ResponseEntity.status(200).body(todoItems);
+        List<OutgoingTodoItem> outgoingItems = new ArrayList<>();
+        for(TodoItem todoItem : todoItems) {
+            outgoingItems.add(OutgoingTodoItem.outgoingTodoItemFromTodoItem(todoItem));
+        }
+        return ResponseEntity.status(200).body(outgoingItems);
     }
 
     @GetMapping(value = "/{id}")
@@ -38,14 +44,16 @@ public class TodoController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         TodoItem item = todoItem.get();
-        return ResponseEntity.status(200).body(item);
+        OutgoingTodoItem outgoingItem = OutgoingTodoItem.outgoingTodoItemFromTodoItem(item);
+        return ResponseEntity.status(200).body(outgoingItem);
     }
 
     @PostMapping
     public ResponseEntity<Object> postTodo(@RequestBody IncomingTodoItem todoDto) {
         TodoItem todoItem = TodoItem.createItem(todoDto.getText());
         TodoItem updatedItem = todoRepository.save(todoItem);
-        return ResponseEntity.status(201).body(updatedItem);
+        OutgoingTodoItem outgoing = OutgoingTodoItem.outgoingTodoItemFromTodoItem(updatedItem);
+        return ResponseEntity.status(201).body(outgoing);
     }
 
     @PatchMapping(value = "/{id}")
@@ -56,7 +64,8 @@ public class TodoController {
         }
         TodoItem updatedTodo = todoItem.get().markAsComplete();
         todoRepository.save(updatedTodo);
-        return ResponseEntity.status(200).body(updatedTodo);
+        OutgoingTodoItem outgoingTodo = OutgoingTodoItem.outgoingTodoItemFromTodoItem(updatedTodo);
+        return ResponseEntity.status(200).body(outgoingTodo);
     }
 
     @DeleteMapping(value = "/{id}")

@@ -1,5 +1,7 @@
 package org.launchcode.todo.controllers.todo;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -31,13 +33,18 @@ public class PostTodosTests {
     @Test
     @DisplayName(value = "POST /todos")
     public void postTodos() throws Exception {
+        // HTTP Response test:
         IncomingTodoItem testPostTodo = new IncomingTodoItem("test post");
         String testPostTodoJson = new ObjectMapper().writeValueAsString(testPostTodo);
         mockMvc.perform(MockMvcRequestBuilders.post("/todos").contentType(MediaType.APPLICATION_JSON).content(testPostTodoJson))
         .andExpect(MockMvcResultMatchers.status().isCreated())
         .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
         .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(testPostTodo.getText()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.completed").value(false));
+        .andExpect(MockMvcResultMatchers.jsonPath("$.completed").value(false))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.tasks").doesNotExist());
+
+        // Database test:
+        assertEquals(1, todoRepository.count());
     }
 
 }

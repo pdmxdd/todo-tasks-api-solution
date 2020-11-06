@@ -1,9 +1,14 @@
 package org.launchcode.todo.Models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  * TodoItem Interface
@@ -23,6 +28,13 @@ public class TodoItem implements ITodoItem {
   private int id;
   private String text;
   private boolean completed;
+
+  @OneToMany(mappedBy = "todoItem", cascade = CascadeType.ALL)
+  private List<Task> tasks = new ArrayList<>();
+
+  public List<Task> getTasks() {
+    return this.tasks;
+  }
 
   public int getId() {
     return this.id;
@@ -53,6 +65,10 @@ public class TodoItem implements ITodoItem {
     TodoItem todoItem = new TodoItem(text);
     
     return todoItem;
+  }
+
+  public void addTask(Task task) {
+    this.tasks.add(task);
   }
 
 }
