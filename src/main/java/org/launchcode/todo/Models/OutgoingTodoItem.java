@@ -1,5 +1,8 @@
 package org.launchcode.todo.Models;
 
+import io.swagger.annotations.ApiModel;
+
+@ApiModel(value = "Outgoing Todo Item", description = "Todo Item outgoing JSON representation")
 public class OutgoingTodoItem {
 
     int id;

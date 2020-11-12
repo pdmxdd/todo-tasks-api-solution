@@ -20,13 +20,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+// import io.swagger.annotations.ApiResponse;
+// import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 @RequestMapping(value = "/todos")
+@Api(value = "todo", description = "Operations about Todo Items")
 public class TodoController {
 
     @Autowired
     private TodoRepository todoRepository;
 
+    @ApiOperation(
+        value = "Find all Todo Items", 
+        notes = "Returns all Todo Items that are currently stored in the database as OutgoingTodoItem DTOs",
+        produces = "application/json",
+        response = OutgoingTodoItem.class,
+        responseContainer = "List")
+    // @ApiResponses(value = {
+    //     @ApiResponse(code = 404, message = "Todo ID not found")
+    // })
+    @Operation(
+        summary = "Find All Todo Items",
+        description = "Returns a list of all Todo Items",
+        responses = {
+            @ApiResponse(
+                description = "List of Todo Items",
+                content = @Content(schema = @Schema(implementation = OutgoingTodoItem.class))
+            )
+        }
+    )
     @GetMapping
     public ResponseEntity<Object> getTodos() {
         List<TodoItem> todoItems = todoRepository.findAll();
@@ -37,6 +66,24 @@ public class TodoController {
         return ResponseEntity.status(200).body(outgoingItems);
     }
 
+    @Operation(
+        summary = "Find todo by ID",
+        description = "Returns a Todo Item by ID",
+        responses = {
+            @ApiResponse(
+                description = "The Todo Item",
+                content = @Content(schema = @Schema(implementation = OutgoingTodoItem.class))
+            ),
+            @ApiResponse(
+                responseCode = "404", description = "Invalid Todo Item"
+            ),
+            @ApiResponse(
+                description = "The Todo Item",
+                responseCode = "200",
+                content = @Content(schema = @Schema(implementation = OutgoingTodoItem.class))
+            )
+        }
+    )
     @GetMapping(value = "/{id}")
     public ResponseEntity<Object> getTodoById(@PathVariable int id) {
         Optional<TodoItem> todoItem = todoRepository.findById(id);
