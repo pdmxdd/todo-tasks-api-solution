@@ -17,13 +17,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping(value = "/todos/{id}/tasks")
+@Api(value = "Operations on a Todo Item's sub-tasks", produces = "application/json")
 public class TaskController {
     
     @Autowired
     TodoRepository todoRepository;
 
+    @ApiOperation(
+        value = "Get Todo Item's tasks",
+        notes = "Get a list of tasks associated with Todo Item matching ID",
+        response = TaskDto.class,
+        responseContainer = "List",
+        produces = "application/json"
+    )
     @GetMapping
     public ResponseEntity<Object> getTodoTasks(@PathVariable int id) {
         Optional<TodoItem> optionalTodoItem = todoRepository.findById(id);
@@ -41,6 +52,10 @@ public class TaskController {
         return ResponseEntity.status(200).body(taskDtos);
     }
 
+    @ApiOperation(
+        value = "Add a Task to a Todo Item",
+        notes = "Add a task to a Todo Item matching ID"
+    )
     @PostMapping
     public ResponseEntity<Object> putTodoTasks(@PathVariable int id, @RequestBody TaskDto taskDto) {
         
